@@ -1,0 +1,141 @@
+{
+  "aws": {
+    "profile": "default",
+    "region": "us-east-1",
+    "regions": [
+      "us-east-1"
+    ]
+  },
+  "terraformer": {
+    "provider": "aws",
+    "pathOutput": "terraform/generated"
+  },
+  "modules": [
+    {
+      "name": "vpc",
+      "enabled": true,
+      "resources": [
+        "vpc",
+        "subnet",
+        "route_table",
+        "sg",
+        "igw",
+        "nat"
+      ],
+      "filters": [],
+      "extraArgs": []
+    },
+    {
+      "name": "acm",
+      "enabled": true,
+      "resources": [
+        "acm"
+      ],
+      "filters": [],
+      "extraArgs": []
+    },
+    {
+      "name": "alb",
+      "enabled": true,
+      "resources": [
+        "alb"
+      ],
+      "filters": [],
+      "extraArgs": []
+    },
+    {
+      "name": "elb",
+      "enabled": true,
+      "resources": [
+        "elb"
+      ],
+      "filters": [],
+      "extraArgs": []
+    },
+    {
+      "name": "eks",
+      "enabled": true,
+      "resources": [
+        "eks"
+      ],
+      "filters": [],
+      "extraArgs": []
+    },
+    {
+      "name": "rds",
+      "enabled": true,
+      "resources": [
+        "rds"
+      ],
+      "filters": [],
+      "extraArgs": []
+    },
+    {
+      "name": "ec2",
+      "enabled": true,
+      "resources": [
+        "ec2_instance"
+      ],
+      "filters": [],
+      "extraArgs": []
+    },
+    {
+      "name": "ec2-autoscaling",
+      "enabled": true,
+      "resources": [
+        "autoscaling"
+      ],
+      "filters": [],
+      "extraArgs": []
+    },
+    {
+      "name": "ecs",
+      "enabled": true,
+      "resources": [
+        "ecs"
+      ],
+      "filters": [],
+      "extraArgs": []
+    },
+    {
+      "name": "iam-role",
+      "enabled": true,
+      "resources": [
+        "iam"
+      ],
+      "filters": [],
+      "extraArgs": []
+    },
+    {
+      "name": "iam-workload-roles",
+      "enabled": true,
+      "resources": [
+        "iam"
+      ],
+      "filters": [],
+      "extraArgs": []
+    },
+    {
+      "name": "security-baseline",
+      "enabled": true,
+      "resources": [
+        "iam",
+        "cloudwatch",
+        "cloudtrail",
+        "kms",
+        "sg"
+      ],
+      "filters": [],
+      "extraArgs": []
+    },
+    {
+      "name": "s3",
+      "enabled": true,
+      "resources": [
+        "s3"
+      ],
+      "filters": [],
+      "extraArgs": []
+    }
+  ]
+}

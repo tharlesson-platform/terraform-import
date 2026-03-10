@@ -1,0 +1,11 @@
+# Terraform local artifacts
+**/.terraform/*
+**/*.tfstate
+**/*.tfstate.*
+**/crash.log
+
+# Local backend credentials/config
+config/backend-config.json
+
+# Temporary files
+*.tmp
