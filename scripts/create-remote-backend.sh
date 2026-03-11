@@ -5,6 +5,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=./common.sh
 source "${SCRIPT_DIR}/common.sh"
 
+require_bash_version 4
+
 BUCKET_NAME=""
 DYNAMODB_TABLE=""
 REGION="us-east-1"
