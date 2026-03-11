@@ -5,6 +5,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=./common.sh
 source "${SCRIPT_DIR}/common.sh"
 
+require_bash_version 4
+
 CONFIG_PATH="config/import-config.json"
 BACKEND_CONFIG_PATH="config/backend-config.json"
 ONLY_MODULES=""

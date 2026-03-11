@@ -6,6 +6,8 @@
 
 # Local backend credentials/config
 config/backend-config.json
+config/terraform-modules-config.json
+config/import-map.json
 
 # Temporary files
 *.tmp

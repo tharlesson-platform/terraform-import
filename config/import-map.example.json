@@ -1,0 +1,14 @@
+{
+  "imports": {
+    "vpc": [
+      {
+        "address": "module.vpc.module.vpc.aws_vpc.this[0]",
+        "id": "vpc-0123456789abcdef0"
+      }
+    ],
+    "iam-role": [],
+    "iam-workload-roles": [],
+    "rds": [],
+    "s3": []
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "terraformModulesPath": "../terraform-modules",
+  "client": "client-a",
+  "environment": "dev",
+  "stackOrder": [
+    "security-baseline",
+    "iam-role",
+    "iam-workload-roles",
+    "vpc",
+    "acm",
+    "alb",
+    "elb",
+    "s3",
+    "rds",
+    "ecs",
+    "eks",
+    "ec2",
+    "ec2-autoscaling"
+  ],
+  "moduleToStackMap": {
+    "iam-role": "iam",
+    "iam-workload-roles": "iam"
+  }
+}

@@ -22,9 +22,22 @@ require_cmd() {
   command -v "$cmd" >/dev/null 2>&1 || die "Required command not found: $cmd"
 }
 
+require_bash_version() {
+  local min_major="${1:-4}"
+  local current_major="${BASH_VERSINFO[0]:-0}"
+
+  if (( current_major < min_major )); then
+    die "Bash ${min_major}+ is required. Current version: ${BASH_VERSION}"
+  fi
+}
+
 resolve_path() {
   local path_value="$1"
-  if [[ "$path_value" = /* ]]; then
+  if [[ "$path_value" == "~" ]]; then
+    printf '%s\n' "$HOME"
+  elif [[ "$path_value" == "~/"* ]]; then
+    printf '%s/%s\n' "$HOME" "${path_value#~/}"
+  elif [[ "$path_value" = /* ]]; then
     printf '%s\n' "$path_value"
   else
     printf '%s/%s\n' "$PROJECT_ROOT" "$path_value"
