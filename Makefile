@@ -12,7 +12,6 @@ SYNC_BACKEND ?= 0
 AUTO_APPROVE ?= 0
 
 BUCKET ?=
-DYNAMODB_TABLE ?=
 REGION ?= us-east-1
 PROFILE ?=
 STATE_PREFIX ?= terraform-import
@@ -32,7 +31,7 @@ help:
 	@echo "  make import-all [ONLY=vpc,eks]"
 	@echo "  make import-all-with-backend [ONLY=vpc,eks]"
 	@echo "  make dry-run-all [ONLY=vpc,eks]"
-	@echo "  make backend-create BUCKET=<bucket> DYNAMODB_TABLE=<table> [REGION=us-east-1] [PROFILE=default]"
+	@echo "  make backend-create BUCKET=<bucket> [REGION=us-east-1] [PROFILE=default]"
 	@echo "  make modules-plan [ONLY=vpc,rds] [TF_MODULES_CONFIG=config/terraform-modules-config.json]"
 	@echo "  make modules-apply [ONLY=vpc,rds] [AUTO_APPROVE=1] [SYNC_BACKEND=1]"
 	@echo "  make modules-import IMPORT_MAP=config/import-map.json [ONLY=vpc,iam-role]"
@@ -78,11 +77,9 @@ dry-run-all:
 		--dry-run
 
 backend-create:
-	@test -n "$(BUCKET)" || (echo "BUCKET is required. Example: make backend-create BUCKET=my-tf-state DYNAMODB_TABLE=tf-locks" && exit 1)
-	@test -n "$(DYNAMODB_TABLE)" || (echo "DYNAMODB_TABLE is required. Example: make backend-create BUCKET=my-tf-state DYNAMODB_TABLE=tf-locks" && exit 1)
+	@test -n "$(BUCKET)" || (echo "BUCKET is required. Example: make backend-create BUCKET=my-tf-state" && exit 1)
 	@bash ./scripts/create-remote-backend.sh \
 		--bucket "$(BUCKET)" \
-		--dynamodb-table "$(DYNAMODB_TABLE)" \
 		--region "$(REGION)" \
 		$(if $(PROFILE),--profile "$(PROFILE)",) \
 		--state-prefix "$(STATE_PREFIX)" \
