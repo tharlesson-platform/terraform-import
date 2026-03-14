@@ -165,7 +165,7 @@ write_backend_hcl() {
   local key
   local bucket
   local region
-  local dynamodb_table
+  local use_lockfile
   local profile
   local kms_key_id
   local encrypt
@@ -178,7 +178,7 @@ write_backend_hcl() {
 
   bucket="$(jq -r '.bucket // empty' "$BACKEND_FILE")"
   region="$(jq -r '.region // empty' "$BACKEND_FILE")"
-  dynamodb_table="$(jq -r '.dynamodbTable // empty' "$BACKEND_FILE")"
+  use_lockfile="$(jq -r '.useLockfile // "true"' "$BACKEND_FILE")"
   profile="$(jq -r '.profile // empty' "$BACKEND_FILE")"
   kms_key_id="$(jq -r '.kmsKeyId // empty' "$BACKEND_FILE")"
   encrypt="$(jq -r '.encrypt // empty' "$BACKEND_FILE")"
@@ -197,7 +197,9 @@ write_backend_hcl() {
     printf 'bucket = "%s"\n' "$bucket"
     printf 'key = "%s"\n' "$key"
     printf 'region = "%s"\n' "$region"
-    [[ -n "$dynamodb_table" ]] && printf 'dynamodb_table = "%s"\n' "$dynamodb_table"
+    if [[ "$use_lockfile" == "true" || "$use_lockfile" == "false" ]]; then
+      printf 'use_lockfile = %s\n' "$use_lockfile"
+    fi
     [[ -n "$profile" ]] && printf 'profile = "%s"\n' "$profile"
     [[ -n "$kms_key_id" ]] && printf 'kms_key_id = "%s"\n' "$kms_key_id"
     if [[ "$encrypt" == "true" || "$encrypt" == "false" ]]; then

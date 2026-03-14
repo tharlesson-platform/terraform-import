@@ -117,14 +117,14 @@ create_backend_temp_config() {
   local tmp_file
   local bucket
   local region
-  local dynamodb_table
+  local use_lockfile
   local encrypt
   local profile
   local kms_key_id
 
   bucket="$(jq -r '.bucket // empty' "$backend_json")"
   region="$(jq -r '.region // empty' "$backend_json")"
-  dynamodb_table="$(jq -r '.dynamodbTable // empty' "$backend_json")"
+  use_lockfile="$(jq -r '.useLockfile // "true"' "$backend_json")"
   encrypt="$(jq -r '.encrypt // empty' "$backend_json")"
   profile="$(jq -r '.profile // empty' "$backend_json")"
   kms_key_id="$(jq -r '.kmsKeyId // empty' "$backend_json")"
@@ -137,7 +137,9 @@ create_backend_temp_config() {
     printf 'bucket = "%s"\n' "$bucket"
     printf 'key = "%s"\n' "$state_key"
     printf 'region = "%s"\n' "$region"
-    [[ -n "$dynamodb_table" ]] && printf 'dynamodb_table = "%s"\n' "$dynamodb_table"
+    if [[ "$use_lockfile" == "true" || "$use_lockfile" == "false" ]]; then
+      printf 'use_lockfile = %s\n' "$use_lockfile"
+    fi
     if [[ "$encrypt" == "true" || "$encrypt" == "false" ]]; then
       printf 'encrypt = %s\n' "$encrypt"
     fi

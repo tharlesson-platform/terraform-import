@@ -1,7 +1,7 @@
 {
   "bucket": "my-terraform-state-bucket",
   "region": "us-east-1",
-  "dynamodbTable": "terraform-state-locks",
+  "useLockfile": true,
   "encrypt": true,
   "profile": "default",
   "stateKeyPrefix": "terraform-import",

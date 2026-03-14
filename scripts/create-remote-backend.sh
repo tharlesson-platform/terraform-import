@@ -8,7 +8,6 @@ source "${SCRIPT_DIR}/common.sh"
 require_bash_version 4
 
 BUCKET_NAME=""
-DYNAMODB_TABLE=""
 REGION="us-east-1"
 PROFILE=""
 STATE_PREFIX="terraform-import"
@@ -20,11 +19,10 @@ DRY_RUN=0
 usage() {
   cat <<'EOF'
 Usage:
-  scripts/create-remote-backend.sh --bucket <name> --dynamodb-table <name> [options]
+  scripts/create-remote-backend.sh --bucket <name> [options]
 
 Options:
   --bucket <name>              S3 bucket for Terraform state (required)
-  --dynamodb-table <name>      DynamoDB table for state lock (required)
   --region <name>              AWS region (default: us-east-1)
   --profile <name>             AWS profile (optional)
   --state-prefix <prefix>      Prefix for Terraform state keys (default: terraform-import)
@@ -40,10 +38,6 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --bucket)
       BUCKET_NAME="${2:-}"
-      shift 2
-      ;;
-    --dynamodb-table)
-      DYNAMODB_TABLE="${2:-}"
       shift 2
       ;;
     --region)
@@ -85,7 +79,6 @@ while [[ $# -gt 0 ]]; do
 done
 
 [[ -n "$BUCKET_NAME" ]] || die "--bucket is required"
-[[ -n "$DYNAMODB_TABLE" ]] || die "--dynamodb-table is required"
 
 require_cmd aws
 
@@ -99,15 +92,10 @@ aws_run() {
 }
 
 bucket_exists=0
-table_exists=0
 
 if [[ "$DRY_RUN" -ne 1 ]]; then
   if "${aws_base[@]}" s3api head-bucket --bucket "$BUCKET_NAME" >/dev/null 2>&1; then
     bucket_exists=1
-  fi
-
-  if "${aws_base[@]}" dynamodb describe-table --table-name "$DYNAMODB_TABLE" >/dev/null 2>&1; then
-    table_exists=1
   fi
 else
   warn "Dry-run enabled: resource existence checks are skipped."
@@ -139,16 +127,6 @@ aws_run s3api put-bucket-encryption \
   --bucket "$BUCKET_NAME" \
   --server-side-encryption-configuration '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
 
-if [[ "$table_exists" -eq 0 ]]; then
-  aws_run dynamodb create-table \
-    --table-name "$DYNAMODB_TABLE" \
-    --attribute-definitions AttributeName=LockID,AttributeType=S \
-    --key-schema AttributeName=LockID,KeyType=HASH \
-    --billing-mode PAY_PER_REQUEST
-else
-  log "DynamoDB table already exists: $DYNAMODB_TABLE"
-fi
-
 if [[ "$WRITE_CONFIG" -eq 1 ]]; then
   backend_file="$(resolve_path "$BACKEND_CONFIG_PATH")"
   if [[ "$DRY_RUN" -eq 1 ]]; then
@@ -159,7 +137,7 @@ if [[ "$WRITE_CONFIG" -eq 1 ]]; then
 {
   "bucket": "${BUCKET_NAME}",
   "region": "${REGION}",
-  "dynamodbTable": "${DYNAMODB_TABLE}",
+  "useLockfile": true,
   "encrypt": true,
   "profile": "${PROFILE}",
   "stateKeyPrefix": "${STATE_PREFIX}",
@@ -170,4 +148,4 @@ EOF
   fi
 fi
 
-log "Remote backend setup complete."
+log "Remote backend setup complete (S3 state + S3 lockfile)."

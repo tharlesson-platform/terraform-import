@@ -1,6 +1,6 @@
 # terraform-import
 
-Automacao para importar infraestrutura AWS existente para Terraform, separada por modulo, com suporte a backend remoto em S3 (state) + DynamoDB (lock).
+Automacao para importar infraestrutura AWS existente para Terraform, separada por modulo, com suporte a backend remoto em S3 (state + lockfile).
 
 ## Modulos configurados
 
@@ -23,7 +23,7 @@ Automacao para importar infraestrutura AWS existente para Terraform, separada po
 - `bash` 4+
 - `make`
 - `jq`
-- `terraform`
+- `terraform` 1.10+ (recomendado para `use_lockfile` no backend S3)
 - `terraformer`
 - `aws` (AWS CLI v2)
 
@@ -37,7 +37,7 @@ Observacao de compatibilidade:
 - `config/backend-config.example.json`: exemplo de backend remoto.
 - `config/terraform-modules-config.example.json`: configura a integracao com `../terraform-modules`.
 - `config/import-map.example.json`: modelo para mapear `address` e `id` de `terraform import`.
-- `scripts/create-remote-backend.sh`: cria bucket S3 + tabela DynamoDB e opcionalmente gera `backend-config.json`.
+- `scripts/create-remote-backend.sh`: cria bucket S3 e opcionalmente gera `backend-config.json`.
 - `scripts/import-module.sh`: importa um modulo.
 - `scripts/import-all.sh`: importa todos os modulos habilitados.
 - `scripts/run-terraform-modules.sh`: executa `plan`, `apply` ou `import` direto nos stacks `live/<client>/<env>/<stack>` do `terraform-modules`.
@@ -49,7 +49,7 @@ Observacao de compatibilidade:
 2. Crie o backend remoto:
 
 ```bash
-make backend-create BUCKET=my-tf-state DYNAMODB_TABLE=tf-state-locks REGION=us-east-1 PROFILE=default
+make backend-create BUCKET=my-tf-state REGION=us-east-1 PROFILE=default
 ```
 
 3. Revise o arquivo gerado `config/backend-config.json`.
