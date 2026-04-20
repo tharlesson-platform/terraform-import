@@ -128,6 +128,23 @@ make modules-apply ONLY=vpc,iam-role,iam-workload-roles SYNC_BACKEND=1 AUTO_APPR
 make check-unix
 ```
 
+## Ferramenta CLI complementar
+
+Depois da importacao ou de ajustes estruturais no codigo Terraform, use o repositorio irmao `terraform-pr-risk-analyzer` para classificar risco operacional antes do apply.
+
+Exemplo:
+
+```bash
+terraform plan -out plan.out
+terraform show -json plan.out > plan.json
+terraform-pr-risk-analyzer analyze --plan plan.json --environment stage --fail-above 50
+```
+
+Isso ajuda a separar:
+
+- `terraform-import`: descoberta e importacao do estate atual;
+- `terraform-pr-risk-analyzer`: governanca e seguranca de mudanca sobre o plan resultante.
+
 ## Observacoes
 
 - O arquivo `config/import-config.json` usa nomes de recursos do `terraformer`. Ajuste conforme a versao que voce utiliza.
