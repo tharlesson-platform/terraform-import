@@ -182,3 +182,13 @@ Ao reutilizar ou derivar este material:
 
 **Tharlesson**
 GitHub: https://github.com/tharlesson
+
+## Validação em runner local isolado
+
+O check `guardrails` usa uma VM Linux ARM64 efêmera com label por execução,
+checkout do SHA exato e credenciais de checkout não persistidas. O job mantém as
+validações de CODEOWNERS, Dependabot e referências dos workflows, com limite de
+10 minutos. A VM não admite mounts do host, agente SSH ou acesso ao armazenamento
+local de artifacts; o controlador exige revisão da fonte antes do registro.
+Esta validação não executa Terraform plan/apply, Helm nem alterações de cluster.
+A reversão consiste em reverter este commit pelo mesmo fluxo de PR e revisão.
